@@ -2,7 +2,13 @@ import type { Database } from '../../database';
 import { serverSeeds, sessions, users } from '../../database/schema';
 import { User } from '../../database/types';
 import { SESSION_COOKIE_NAME, SESSION_TTL } from '../../utils/consts';
-import { API_URL, APP_URL, STEAM_API_KEY } from '../../utils/env';
+import {
+  API_URL,
+  APP_URL,
+  COOKIE_SAME_SITE,
+  COOKIE_SECURE,
+  STEAM_API_KEY,
+} from '../../utils/env';
 import { generateRandomSeed, sha256 } from '../../utils/functions';
 import type { ISteamUserResponse } from '../../utils/steam';
 import { InjectDatabase } from '../database/database.provider';
@@ -101,7 +107,8 @@ export class AuthService {
       reply.setCookie(SESSION_COOKIE_NAME, session.id, {
         path: '/',
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: COOKIE_SAME_SITE,
+        secure: COOKIE_SECURE,
         maxAge: +SESSION_TTL,
       });
     });
@@ -115,8 +122,9 @@ export class AuthService {
 
       reply.clearCookie(SESSION_COOKIE_NAME, {
         path: '/',
-        sameSite: 'lax',
         httpOnly: true,
+        sameSite: COOKIE_SAME_SITE,
+        secure: COOKIE_SECURE,
       });
     });
   }
