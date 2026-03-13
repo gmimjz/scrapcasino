@@ -34,6 +34,10 @@ if (!process.env.COOKIE_SAME_SITE) {
   throw new Error('COOKIE_SAME_SITE is not set in the environment variables');
 }
 
+if (!process.env.COOKIE_DOMAIN) {
+  throw new Error('COOKIE_DOMAIN is not set in the environment variables');
+}
+
 export const DATABASE_URL = process.env.DATABASE_URL;
 export const PORT = +process.env.PORT;
 export const SESSION_SECRET = process.env.SESSION_SECRET;
@@ -45,3 +49,4 @@ export const COOKIE_SAME_SITE = process.env.COOKIE_SAME_SITE! as
   | 'lax'
   | 'strict'
   | 'none';
+export const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN;

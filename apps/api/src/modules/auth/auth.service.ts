@@ -5,6 +5,7 @@ import { SESSION_COOKIE_NAME, SESSION_TTL } from '../../utils/consts';
 import {
   API_URL,
   APP_URL,
+  COOKIE_DOMAIN,
   COOKIE_SAME_SITE,
   COOKIE_SECURE,
   STEAM_API_KEY,
@@ -110,6 +111,7 @@ export class AuthService {
         sameSite: COOKIE_SAME_SITE,
         secure: COOKIE_SECURE,
         maxAge: +SESSION_TTL,
+        domain: COOKIE_DOMAIN,
       });
     });
 
@@ -125,6 +127,7 @@ export class AuthService {
         httpOnly: true,
         sameSite: COOKIE_SAME_SITE,
         secure: COOKIE_SECURE,
+        domain: COOKIE_DOMAIN,
       });
     });
   }
