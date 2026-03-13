@@ -1,0 +1,89 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-format:
+    name: lint and format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: lint api
+        working-directory: apps/api
+        run: pnpm lint
+
+      - name: format api
+        working-directory: apps/api
+        run: pnpm format
+
+      - name: lint app
+        working-directory: apps/app
+        run: pnpm lint
+
+      - name: format app
+        working-directory: apps/app
+        run: pnpm format
+
+  run-tests:
+    name: run tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: scrapcasino_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/scrapcasino_test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/scrapcasino_test
+      PORT: 3001
+      SESSION_SECRET: secret
+      STEAM_API_KEY: api_key
+      APP_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: install dependencies
+        run: pnpm install
+
+      - name: run migrations
+        working-directory: apps/api
+        run: pnpm db:push
+
+      - name: run e2e tests
+        working-directory: apps/api
+        run: pnpm test:e2e

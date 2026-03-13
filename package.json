@@ -1,0 +1,26 @@
+{
+  "name": "scrapcasino",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo run start:dev dev db:studio --parallel",
+    "db:push": "pnpm --filter=api run db:push",
+    "db:push:test": "pnpm --filter=api run db:push:test",
+    "test:e2e": "pnpm --filter=api run test:e2e",
+    "generate:client": "pnpm --filter=api run generate:client",
+    "typecheck": "pnpm --filter=api --filter=app run typecheck",
+    "db:seed": "pnpm --filter=api run db:seed",
+    "db:generate": "pnpm --filter=api run db:generate",
+    "lint": "pnpm --filter=api --filter=app run lint",
+    "format": "pnpm --filter=api --filter=app run format",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.30.2",
+  "devDependencies": {
+    "turbo": "^2.8.11"
+  }
+}

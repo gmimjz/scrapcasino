@@ -1,0 +1,915 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/login": {
+      "get": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/return": {
+      "get": {
+        "operationId": "AuthController_return",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/user": {
+      "get": {
+        "operationId": "UserController_getUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "operationId": "UserController_getUserById",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicUserWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/steam-trade-url": {
+      "post": {
+        "operationId": "UserController_setSteamTradeUrl",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetSteamTradeUrlBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/server-seed/rotate": {
+      "post": {
+        "operationId": "UserController_rotateServerSeed",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/user/client-seed": {
+      "put": {
+        "operationId": "UserController_setClientSeed",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetClientSeedBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/chat/messages": {
+      "get": {
+        "operationId": "ChatController_getMessages",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMessagesResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/chat/message": {
+      "post": {
+        "operationId": "ChatController_sendMessage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessageBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatMessageWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/chat/message/{id}": {
+      "delete": {
+        "operationId": "ChatController_deleteMessage",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatMessageWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/chat/mute/{userId}": {
+      "post": {
+        "operationId": "ChatController_muteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MuteUserBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/chat/unmute/{userId}": {
+      "post": {
+        "operationId": "ChatController_unmuteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserWrappedResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/crates": {
+      "get": {
+        "operationId": "CrateController_getCrates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCratesResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Crate"
+        ]
+      }
+    },
+    "/crates/{id}": {
+      "get": {
+        "operationId": "CrateController_getCrate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCrateResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Crate"
+        ]
+      }
+    },
+    "/crates/{id}/open": {
+      "post": {
+        "operationId": "CrateController_openCrate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CrateItemResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Crate"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Scrap Casino API",
+    "description": "",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "Role": {
+        "type": "string",
+        "enum": [
+          "admin",
+          "mod",
+          "user"
+        ]
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              }
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "steamId": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "xp": {
+            "type": "number"
+          },
+          "balance": {
+            "type": "string"
+          },
+          "mutedUntil": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "steamTradeUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "hashedServerSeed": {
+            "type": "string"
+          },
+          "clientSeed": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "id",
+          "steamId",
+          "username",
+          "avatarUrl",
+          "xp",
+          "balance",
+          "mutedUntil",
+          "steamTradeUrl",
+          "hashedServerSeed",
+          "clientSeed",
+          "nonce",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UserWrappedResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      },
+      "PublicUserResponse": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              }
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "steamId": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "xp": {
+            "type": "number"
+          },
+          "balance": {
+            "type": "string"
+          },
+          "mutedUntil": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "steamTradeUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "hashedServerSeed": {
+            "type": "string"
+          },
+          "clientSeed": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "id",
+          "steamId",
+          "username",
+          "avatarUrl",
+          "xp",
+          "balance",
+          "mutedUntil",
+          "steamTradeUrl",
+          "hashedServerSeed",
+          "clientSeed",
+          "nonce",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PublicUserWrappedResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/PublicUserResponse"
+          }
+        },
+        "required": [
+          "user"
+        ]
+      },
+      "SetSteamTradeUrlBody": {
+        "type": "object",
+        "properties": {
+          "steamTradeUrl": {
+            "type": "string",
+            "pattern": "/^https:\\/\\/steamcommunity\\.com\\/tradeoffer\\/new\\/\\?partner=(\\d+)&token=([a-zA-Z0-9_-]+)$/"
+          }
+        },
+        "required": [
+          "steamTradeUrl"
+        ]
+      },
+      "SetClientSeedBody": {
+        "type": "object",
+        "properties": {
+          "clientSeed": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32
+          }
+        },
+        "required": [
+          "clientSeed"
+        ]
+      },
+      "ChatMessageResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "isRemoved": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "message",
+          "isRemoved",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PartialUserResponse": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Role"
+              }
+            ]
+          },
+          "id": {
+            "type": "string"
+          },
+          "steamId": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "xp": {
+            "type": "number"
+          },
+          "balance": {
+            "type": "string"
+          },
+          "mutedUntil": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "steamTradeUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "hashedServerSeed": {
+            "type": "string"
+          },
+          "clientSeed": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "role",
+          "id",
+          "steamId",
+          "username",
+          "avatarUrl",
+          "xp"
+        ]
+      },
+      "GetMessagesResponse": {
+        "type": "object",
+        "properties": {
+          "chatMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatMessageResponse"
+            }
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PartialUserResponse"
+            }
+          }
+        },
+        "required": [
+          "chatMessages",
+          "users"
+        ]
+      },
+      "SendMessageBody": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ChatMessageWrappedResponse": {
+        "type": "object",
+        "properties": {
+          "chatMessage": {
+            "$ref": "#/components/schemas/ChatMessageResponse"
+          }
+        },
+        "required": [
+          "chatMessage"
+        ]
+      },
+      "MuteUserBody": {
+        "type": "object",
+        "properties": {
+          "duration": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "duration"
+        ]
+      },
+      "CrateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "imageUrl",
+          "cost",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "GetCratesResponse": {
+        "type": "object",
+        "properties": {
+          "crates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CrateResponse"
+            }
+          }
+        },
+        "required": [
+          "crates"
+        ]
+      },
+      "CrateItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "crateId": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "chance": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "crateId",
+          "itemId",
+          "value",
+          "chance",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "imageUrl",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "GetCrateResponse": {
+        "type": "object",
+        "properties": {
+          "crate": {
+            "$ref": "#/components/schemas/CrateResponse"
+          },
+          "crateItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CrateItemResponse"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemResponse"
+            }
+          }
+        },
+        "required": [
+          "crate",
+          "crateItems",
+          "items"
+        ]
+      }
+    }
+  }
+}

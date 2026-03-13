@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-white: #e4dad1;
+  --color-black: #141312;
+  --color-red: #cd412b;
+  --color-green: #8bc34a;
+  --color-yellow: #ffc107;
+  --color-blue: #58b2f9;
+}
+
+@source inline("{hover:,}bg-{white,black,red,green,blue,yellow}");
+@source inline("{hover:,}bg-{white,black,red,green,blue,yellow}/{25,50,75}");
+@source inline("{hover:,}from-{white,black,red,green,blue,yellow}/{25}");
+
+@plugin "tailwind-scrollbar" {
+  nocompatible: true;
+  preferredstrategy: "pseudoelements";
+}
+
+* {
+  font-family: var(--font-sora-sans), sans-serif;
+}
+
+input.no-controls::-webkit-outer-spin-button,
+input.no-controls::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input.no-controls {
+  -moz-appearance: textfield;
+}
+
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(-5%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.25s ease forwards;
+}
+
+.roll-background {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.75) 5%,
+    rgba(0, 0, 0, 0.5) 10%,
+    rgba(0, 0, 0, 0) 15%,
+    rgba(0, 0, 0, 0) 85%,
+    rgba(0, 0, 0, 0.5) 90%,
+    rgba(0, 0, 0, 0.75) 95%,
+    rgba(0, 0, 0, 1) 100%
+  );
+}
