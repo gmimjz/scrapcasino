@@ -2,7 +2,7 @@ import type { Database } from '../../database';
 import { serverSeeds, sessions, users } from '../../database/schema';
 import { User } from '../../database/types';
 import { SESSION_COOKIE_NAME, SESSION_TTL } from '../../utils/consts';
-import { APP_URL, PORT, STEAM_API_KEY } from '../../utils/env';
+import { API_URL, APP_URL, STEAM_API_KEY } from '../../utils/env';
 import { generateRandomSeed, sha256 } from '../../utils/functions';
 import type { ISteamUserResponse } from '../../utils/steam';
 import { InjectDatabase } from '../database/database.provider';
@@ -19,8 +19,8 @@ export class AuthService {
     const params = {
       'openid.ns': 'http://specs.openid.net/auth/2.0',
       'openid.mode': 'checkid_setup',
-      'openid.return_to': `http://localhost:${PORT}/auth/return`,
-      'openid.realm': `http://localhost:${PORT}`,
+      'openid.return_to': `${API_URL}/auth/return`,
+      'openid.realm': `${API_URL}`,
       'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
       'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
     };
