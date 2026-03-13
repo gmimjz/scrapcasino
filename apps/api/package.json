@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "db:seed": "tsx scripts/seed-crate.ts",
     "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
     "build": "nest build",
     "format": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
