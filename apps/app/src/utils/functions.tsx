@@ -119,7 +119,9 @@ export const playCrateSound = () => {
 export const formatBalance = (amount: number) => (amount / 100).toFixed(2);
 
 export const getColorFromPrice = (price: number) => {
-  if (price < 1000) {
+  if (price < 100) {
+    return Color.White;
+  } else if (price >= 100 && price < 1000) {
     return Color.Green;
   } else if (price >= 1000 && price < 10000) {
     return Color.Blue;

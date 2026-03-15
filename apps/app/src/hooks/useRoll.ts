@@ -74,11 +74,14 @@ export const useRoll = (crateItems: CrateItemResponse[]) => {
       playCrateSound();
       setTimeout(() => {
         setTransitionDuration(7000);
+        const edgeBiasedOffset = Math.round(
+          ((1 - Math.cos(Math.random() * Math.PI)) / 2) * ROLL_ITEM_WIDTH,
+        );
         setOffset(
           (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) * 50 +
             ROLL_ITEM_WIDTH / 2 +
             4 +
-            Math.round(Math.random() * ROLL_ITEM_WIDTH),
+            edgeBiasedOffset,
         );
         setTimeout(() => {
           setTransitionDuration(250);
