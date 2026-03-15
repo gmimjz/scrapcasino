@@ -49,7 +49,7 @@ export const createUserFactory = (db: Database) => {
       steamId,
       avatarUrl: faker.image.url(),
       xp: faker.number.int({ min: 0, max: 1000 }),
-      balance: faker.finance.amount({ min: 0, max: 1000, dec: 2 }),
+      balance: faker.number.int({ min: 0, max: 100000 }),
       role: Role.User,
       mutedUntil: null,
       steamTradeUrl: `https://steamcommunity.com/tradeoffer/new/?partner=${partner}&token=${faker.string.alphanumeric(8)}`,

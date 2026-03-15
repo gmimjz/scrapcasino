@@ -1,3 +1,4 @@
+import { formatBalance } from "../utils/functions";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -5,7 +6,7 @@ type Props = {
   id: string;
   name: string;
   icon: string;
-  cost: string;
+  cost: number;
 };
 
 export const Crate = ({ id, name, icon, cost }: Props) => {
@@ -16,7 +17,7 @@ export const Crate = ({ id, name, icon, cost }: Props) => {
         <Image src={icon} alt={`${name} crate icon`} height={128} width={128} />
         <button className="flex h-8 w-full cursor-pointer items-center justify-center gap-2 bg-black text-sm font-semibold text-white">
           <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
-          {cost}
+          {formatBalance(cost)}
         </button>
       </div>
     </Link>

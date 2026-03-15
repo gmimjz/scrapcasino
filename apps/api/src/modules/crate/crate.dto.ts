@@ -5,7 +5,7 @@ export class CrateResponse implements Crate {
   id: string;
   name: string;
   imageUrl: string;
-  cost: string;
+  cost: number;
 
   @Exclude()
   createdAt: Date;
@@ -22,7 +22,7 @@ export class CrateItemResponse implements CrateItem {
   id: string;
   crateId: string;
   itemId: string;
-  value: string;
+  value: number;
   chance: number;
 
   @Exclude()

@@ -10,7 +10,7 @@ import { useOpenCrate } from "../mutations/useOpenCrate";
 import { useCrate } from "../queries/useCrate";
 import { USER_QUERY_KEY, useUser } from "../queries/useUser";
 import { Color } from "../utils/enums";
-import { playCrateSound } from "../utils/functions";
+import { formatBalance, playCrateSound } from "../utils/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,7 +33,7 @@ export const Crate = ({ id, initialData }: Props) => {
       if (!user) return user;
       return {
         ...user,
-        balance: (parseFloat(user.balance) + delta).toFixed(2),
+        balance: user.balance + delta,
       };
     });
   };
@@ -67,15 +67,15 @@ export const Crate = ({ id, initialData }: Props) => {
     const cost = crateData.crate.cost;
     const wonItem = await openCrate(id);
     updateBalance(-cost);
-    updateXp(Math.round(+cost * 100));
+    updateXp(cost);
     await roll(wonItem);
-    updateBalance(+wonItem.value);
+    updateBalance(wonItem.value);
   };
 
   const isOpenButtonDisabled =
     isRolling ||
     !user ||
-    parseFloat(crateData.crate.cost) > parseFloat(user.balance);
+    crateData.crate.cost > user.balance;
 
   return (
     <div className="mx-2 my-8 flex flex-col gap-4">
@@ -111,7 +111,7 @@ export const Crate = ({ id, initialData }: Props) => {
         >
           <p className="flex gap-1">
             OPEN <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
-            {crateData.crate.cost}
+            {formatBalance(crateData.crate.cost)}
           </p>
         </Button>
         <Button
@@ -127,7 +127,7 @@ export const Crate = ({ id, initialData }: Props) => {
         <p className="text-sm font-semibold text-white">ITEMS</p>
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2">
           {crateData.crateItems
-            .sort((a, b) => parseFloat(b.value) - parseFloat(a.value))
+            .sort((a, b) => b.value - a.value)
             .map((crateItem) => {
               const item = crateData.items.find(
                 (item) => item.id === crateItem.itemId,
@@ -140,7 +140,7 @@ export const Crate = ({ id, initialData }: Props) => {
                   key={crateItem.id}
                   name={item.name}
                   icon={item.imageUrl}
-                  price={parseFloat(crateItem.value)}
+                  price={crateItem.value}
                   chance={crateItem.chance}
                 />
               );

@@ -1,4 +1,4 @@
-import { getColorFromPrice } from "../utils/functions";
+import { formatBalance, getColorFromPrice } from "../utils/functions";
 import Image from "next/image";
 
 type Props = {
@@ -25,7 +25,7 @@ export const CrateItem = ({ name, price, chance, icon }: Props) => {
         </p>
         <div className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
           <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
-          {price.toFixed(2)}
+          {formatBalance(price)}
         </div>
       </div>
     </div>
