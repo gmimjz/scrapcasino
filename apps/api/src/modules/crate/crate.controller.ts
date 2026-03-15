@@ -2,12 +2,14 @@ import type { User } from '../../database/types';
 import { CurrentUser } from '../../decorators/current-user.decorator';
 import { IsPublic } from '../../decorators/is-public.decorator';
 import {
-  CrateItemResponse,
   GetCrateResponse,
   GetCratesResponse,
+  OpenCrateBody,
+  OpenCrateResponse,
 } from './crate.dto';
 import { CrateService } from './crate.service';
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
@@ -37,7 +39,10 @@ export class CrateController {
   async openCrate(
     @CurrentUser() user: User,
     @Param('id') id: string,
-  ): Promise<CrateItemResponse> {
-    return this.crateService.openCrate(user, id);
+    @Body() body: OpenCrateBody,
+  ): Promise<OpenCrateResponse> {
+    const { count } = body;
+
+    return this.crateService.openCrate(user, id, count);
   }
 }

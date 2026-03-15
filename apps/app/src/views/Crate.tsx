@@ -12,12 +12,14 @@ import { useRoll } from "../hooks/useRoll";
 import { useOpenCrate } from "../mutations/useOpenCrate";
 import { useCrate } from "../queries/useCrate";
 import { USER_QUERY_KEY, useUser } from "../queries/useUser";
+import { CRATE_OPEN_COUNT_OPTIONS } from "../utils/consts";
 import { Color } from "../utils/enums";
 import { formatBalance } from "../utils/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { FaChevronLeft } from "react-icons/fa";
+import { twMerge } from "tailwind-merge";
 
 type Props = {
   id: string;
@@ -52,10 +54,12 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
   };
 
   const {
+    count,
+    setCount,
     roll,
-    offset,
+    offsets,
     transitionDuration,
-    rolledItems,
+    rollsItems,
     showAnimation,
     isRolling,
   } = useRoll(crateData?.crateItems ?? [], initialRolledItems);
@@ -64,17 +68,18 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
     return <></>;
   }
 
+  const totalCost = crateData.crate.cost * count;
+
   const handleOpen = async () => {
-    const cost = crateData.crate.cost;
-    const wonItem = await openCrate(id);
-    updateBalance(-cost);
-    updateXp(cost);
-    await roll(wonItem);
-    updateBalance(wonItem.value);
+    const wonItems = await openCrate({ id, count });
+    const totalWonValue = wonItems.reduce((sum, item) => sum + item.value, 0);
+    updateBalance(-totalCost);
+    updateXp(totalCost);
+    await roll(wonItems);
+    updateBalance(totalWonValue);
   };
 
-  const isOpenButtonDisabled =
-    isRolling || !user || crateData.crate.cost > user.balance;
+  const isOpenButtonDisabled = isRolling || !user || totalCost > user.balance;
 
   return (
     <div className="mx-2 my-8 flex flex-col gap-4">
@@ -94,22 +99,44 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
         />
         <p className="font-semibold text-white">{crateData.crate.name}</p>
       </div>
-      <Roll
-        offset={offset}
-        transitionDuration={transitionDuration}
-        crateItems={rolledItems}
-        items={crateData.items}
-        showAnimation={showAnimation}
-      />
-      <div className="flex justify-center gap-2">
+      <div className="flex flex-col">
+        {rollsItems.map((rolledItems, i) => (
+          <Roll
+            key={i}
+            offset={offsets[i] ?? 0}
+            transitionDuration={transitionDuration}
+            crateItems={rolledItems}
+            items={crateData.items}
+            showAnimation={showAnimation}
+          />
+        ))}
+      </div>
+      <div className="relative flex items-center justify-center gap-2">
+        <div className="absolute left-0 flex gap-1">
+          {CRATE_OPEN_COUNT_OPTIONS.map((countOption) => (
+            <button
+              key={countOption}
+              className={twMerge(
+                "h-6 cursor-pointer bg-white/25 px-3 text-xs font-bold text-white",
+                count === countOption && "bg-blue",
+                isRolling && "opacity-50",
+              )}
+              onClick={() => setCount(countOption)}
+              disabled={isRolling}
+            >
+              {countOption}
+            </button>
+          ))}
+        </div>
         <Button
           color={Color.Red}
           onClick={handleOpen}
           disabled={isOpenButtonDisabled}
         >
           <p className="flex gap-1">
-            OPEN <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
-            {formatBalance(crateData.crate.cost)}
+            OPEN {count} FOR
+            <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
+            {formatBalance(totalCost)}
           </p>
         </Button>
         <Button

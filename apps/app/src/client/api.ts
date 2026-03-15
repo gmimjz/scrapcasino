@@ -169,6 +169,18 @@ export interface GetCrateResponse {
   items: ItemResponse[];
 }
 
+export interface OpenCrateBody {
+  /**
+   * @min 1
+   * @max 5
+   */
+  count: number;
+}
+
+export interface OpenCrateResponse {
+  items: CrateItemResponse[];
+}
+
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -606,10 +618,16 @@ export class Api<
      * @name CrateControllerOpenCrate
      * @request POST:/crates/{id}/open
      */
-    crateControllerOpenCrate: (id: string, params: RequestParams = {}) =>
-      this.request<CrateItemResponse, any>({
+    crateControllerOpenCrate: (
+      id: string,
+      data: OpenCrateBody,
+      params: RequestParams = {},
+    ) =>
+      this.request<OpenCrateResponse, any>({
         path: `/crates/${id}/open`,
         method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

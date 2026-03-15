@@ -5,7 +5,9 @@ import {
   BASE_XP,
   BASE_XP_INCREASE,
   BLOCKED_USERS_LOCAL_STORAGE_KEY,
+  ROLL_BASE_OFFSET,
   ROLL_ITEM_FIRST_INDEX,
+  ROLL_ITEM_WIDTH,
   ROLL_ITEMS_COUNT,
   TICK_SOUNDS,
   WIN_ITEM_ROLL_INDEX,
@@ -201,4 +203,11 @@ export const generateRandomRoll = (
   }
 
   return results;
+};
+
+export const generateOffset = () => {
+  const edgeBiasedOffset = Math.round(
+    ((1 - Math.cos(Math.random() * Math.PI)) / 2) * ROLL_ITEM_WIDTH,
+  );
+  return ROLL_BASE_OFFSET + edgeBiasedOffset;
 };

@@ -1,5 +1,7 @@
 import { Crate, CrateItem, Item } from '../../database/types';
+import { MAX_CRATE_OPEN_COUNT } from './consts';
 import { Exclude } from 'class-transformer';
+import { IsInt, Max, Min } from 'class-validator';
 
 export class CrateResponse implements Crate {
   id: string;
@@ -50,6 +52,17 @@ export class ItemResponse implements Item {
   constructor(partial: Partial<ItemResponse>) {
     Object.assign(this, partial);
   }
+}
+
+export class OpenCrateBody {
+  @IsInt()
+  @Min(1)
+  @Max(MAX_CRATE_OPEN_COUNT)
+  count: number;
+}
+
+export class OpenCrateResponse {
+  items: CrateItemResponse[];
 }
 
 export class GetCratesResponse {
