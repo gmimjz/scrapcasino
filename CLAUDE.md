@@ -35,7 +35,7 @@ pnpm -F api db:studio        # Open Drizzle Studio
 ### Testing
 ```bash
 pnpm test:e2e                # Run API E2E tests (requires test DB)
-pnpm -F api test             # API unit tests
+pnpm test                    # API unit tests
 pnpm -F api test:watch       # Unit tests in watch mode
 pnpm -F api test:cov         # Unit tests with coverage
 ```
