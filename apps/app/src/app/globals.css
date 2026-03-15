@@ -22,6 +22,51 @@
   font-family: var(--font-sora-sans), sans-serif;
 }
 
+input[type="range"].slider {
+  -webkit-appearance: none;
+}
+
+input[type="range"].slider::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  background: linear-gradient(
+    to right,
+    #e4dad1 var(--slider-percent, 0%),
+    #141312 var(--slider-percent, 0%)
+  );
+  height: 6px;
+}
+
+input[type="range"].slider::-moz-range-track {
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    #e4dad1 var(--slider-percent, 0%),
+    #141312 var(--slider-percent, 0%)
+  );
+  height: 6px;
+}
+
+input[type="range"].slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 8px;
+  height: 18px;
+  background: #cd412b;
+  border-radius: 0;
+  cursor: pointer;
+  margin-top: -6px;
+}
+
+input[type="range"].slider::-moz-range-thumb {
+  appearance: none;
+  width: 8px;
+  height: 18px;
+  background: #cd412b;
+  border-radius: 0;
+  cursor: pointer;
+  margin-top: -6px;
+}
+
 input.no-controls::-webkit-outer-spin-button,
 input.no-controls::-webkit-inner-spin-button {
   -webkit-appearance: none;
