@@ -19,6 +19,7 @@ import { formatBalance } from "../utils/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { FaChevronLeft, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import { FaBoltLightning } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
@@ -34,6 +35,7 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
   const user = useUser();
   const { mutateAsync: openCrate } = useOpenCrate();
   const queryClient = useQueryClient();
+  const controlsRef = useRef<HTMLDivElement>(null);
 
   const updateBalance = (delta: number) => {
     queryClient.setQueryData<UserResponse>(USER_QUERY_KEY, (user) => {
@@ -62,6 +64,7 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
     offsets,
     transitionDuration,
     rollsItems,
+    exitingIndices,
     showAnimation,
     isRolling,
     fastSpin,
@@ -69,6 +72,14 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
     volume,
     setVolume,
   } = useRoll(crateData?.crateItems ?? [], initialRolledItems);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      controlsRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 250);
+
+    return () => clearTimeout(timeout);
+  }, [count]);
 
   if (!crateData) {
     return <></>;
@@ -107,17 +118,29 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
       </div>
       <div className="flex flex-col">
         {rollsItems.map((rolledItems, i) => (
-          <Roll
+          <div
             key={i}
-            offset={offsets[i] ?? 0}
-            transitionDuration={transitionDuration}
-            crateItems={rolledItems}
-            items={crateData.items}
-            showAnimation={showAnimation}
-          />
+            className={twMerge(
+              "overflow-hidden",
+              exitingIndices.has(i)
+                ? "animate-roll-exit"
+                : "animate-roll-enter",
+            )}
+          >
+            <Roll
+              offset={offsets[i] ?? 0}
+              transitionDuration={transitionDuration}
+              crateItems={rolledItems}
+              items={crateData.items}
+              showAnimation={showAnimation}
+            />
+          </div>
         ))}
       </div>
-      <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+      <div
+        ref={controlsRef}
+        className="flex scroll-mb-19 flex-col items-center justify-between gap-4 md:flex-row lg:scroll-mb-4"
+      >
         <div className="order-1 flex flex-1 gap-1 md:order-none">
           {CRATE_OPEN_COUNT_OPTIONS.map((countOption) => (
             <button
