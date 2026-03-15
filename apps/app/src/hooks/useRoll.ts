@@ -6,12 +6,10 @@ import {
   ROLL_ITEMS_COUNT,
   WIN_ITEM_ROLL_INDEX,
 } from "../utils/consts";
+import { playCrateSound } from "../utils/functions";
 import { useState } from "react";
 
-export const useRoll = (
-  crateItems: CrateItemResponse[],
-  playCrateSound: () => void,
-) => {
+export const useRoll = (crateItems: CrateItemResponse[]) => {
   const generateRandomRollItem = (): CrateItemResponse => {
     let totalWeight = 0;
 

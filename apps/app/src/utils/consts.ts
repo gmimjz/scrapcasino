@@ -12,3 +12,10 @@ export const ROLL_ITEM_WIDTH = 108;
 export const ROLL_ITEM_GAP_WIDTH = 4;
 
 export const STEAM_ID_BASE = 76561197960265728n;
+
+export const TICK_SOUNDS = [
+  "/tick1.webm",
+  "/tick2.webm",
+  "/tick3.webm",
+  "/tick4.webm",
+];
