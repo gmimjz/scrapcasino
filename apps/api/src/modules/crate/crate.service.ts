@@ -124,15 +124,15 @@ export class CrateService {
         throw new NotFoundException('User not found');
       }
 
-      if (parseFloat(userObject.balance) < parseFloat(crate.cost)) {
+      if (userObject.balance < crate.cost) {
         throw new BadRequestException('Insufficient balance');
       }
 
       await tx
         .update(users)
         .set({
-          balance: sql`${users.balance} - ${crate.cost}::decimal + ${wonItem.value}::decimal`,
-          xp: sql`${users.xp} + ${Math.round(+crate.cost * 100)}::integer`,
+          balance: sql`${users.balance} - ${crate.cost}::integer + ${wonItem.value}::integer`,
+          xp: sql`${users.xp} + ${crate.cost}::integer`,
           nonce: nonce + 1,
         })
         .where(eq(users.id, user.id));

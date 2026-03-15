@@ -19,7 +19,7 @@ export const createCrateItemFactory = (db: Database) => {
       id: faker.string.uuid(),
       crateId: faker.string.uuid(),
       itemId: faker.string.uuid(),
-      value: faker.finance.amount({ min: 0, max: 100, dec: 2 }),
+      value: faker.number.int({ min: 0, max: 10000 }),
       chance: 10000,
       createdAt: new Date(),
       updatedAt: new Date(),

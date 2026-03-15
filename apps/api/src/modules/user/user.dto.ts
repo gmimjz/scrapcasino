@@ -24,7 +24,7 @@ export class UserResponse implements User {
   username: string;
   avatarUrl: string | null;
   xp: number;
-  balance: string;
+  balance: number;
   @ApiProperty({ enum: Role, enumName: 'Role' })
   role: Role;
   mutedUntil: Date | null;
@@ -46,7 +46,7 @@ export class UserResponse implements User {
 
 export class PublicUserResponse extends UserResponse {
   @Exclude()
-  declare balance: string;
+  declare balance: number;
 
   @Exclude()
   declare mutedUntil: Date | null;
@@ -75,7 +75,7 @@ export class PartialUserResponse implements Partial<User> {
   username: string;
   avatarUrl: string | null;
   xp: number;
-  balance?: string;
+  balance?: number;
   @ApiProperty({ enum: Role, enumName: 'Role' })
   role: Role;
   mutedUntil?: Date | null;

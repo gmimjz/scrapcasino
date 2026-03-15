@@ -125,12 +125,14 @@ export const playCrateSound = (
   requestAnimationFrame(tick);
 };
 
+export const formatBalance = (amount: number) => (amount / 100).toFixed(2);
+
 export const getColorFromPrice = (price: number) => {
-  if (price < 10) {
+  if (price < 1000) {
     return Color.Green;
-  } else if (price >= 10 && price < 100) {
+  } else if (price >= 1000 && price < 10000) {
     return Color.Blue;
-  } else if (price >= 100 && price < 500) {
+  } else if (price >= 10000 && price < 50000) {
     return Color.Red;
   } else {
     return Color.Yellow;

@@ -1,11 +1,11 @@
-import { getColorFromPrice } from "../utils/functions";
+import { formatBalance, getColorFromPrice } from "../utils/functions";
 import Image from "next/image";
 import { twMerge } from "tailwind-merge";
 
 type Props = {
   name: string;
   imageUrl: string;
-  price: string;
+  price: number;
   showWinAnimation: boolean;
   showLoseAnimation: boolean;
 };
@@ -20,7 +20,7 @@ export const RollItem = ({
   return (
     <div className="h-[108px] w-[108px] shrink-0 bg-black duration-250">
       <div
-        className={`from-${getColorFromPrice(parseFloat(price))}/25 relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-b to-black/25`}
+        className={`from-${getColorFromPrice(price)}/25 relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-b to-black/25`}
       >
         <Image
           className={twMerge(
@@ -43,7 +43,7 @@ export const RollItem = ({
           )}
         >
           <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
-          {price}
+          {formatBalance(price)}
         </div>
         <div
           className={twMerge(

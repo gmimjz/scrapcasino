@@ -8,6 +8,7 @@
     "db:push": "pnpm --filter=api run db:push",
     "db:push:test": "pnpm --filter=api run db:push:test",
     "test:e2e": "pnpm --filter=api run test:e2e",
+    "generate:swagger": "pnpm --filter=api run generate:swagger",
     "generate:client": "pnpm --filter=api run generate:client",
     "typecheck": "pnpm --filter=api --filter=app run typecheck",
     "db:seed": "pnpm --filter=api run db:seed",

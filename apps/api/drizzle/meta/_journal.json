@@ -8,6 +8,13 @@
       "when": 1773355954661,
       "tag": "0000_initial_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773575022639,
+      "tag": "0001_change_monetary_columns_to_integer",
+      "breakpoints": true
     }
   ]
 }

@@ -23,7 +23,7 @@ export interface UserResponse {
   username: string;
   avatarUrl: string | null;
   xp: number;
-  balance: string;
+  balance: number;
   /** @format date-time */
   mutedUntil: string | null;
   steamTradeUrl: string | null;
@@ -47,7 +47,7 @@ export interface PublicUserResponse {
   username: string;
   avatarUrl: string | null;
   xp: number;
-  balance: string;
+  balance: number;
   /** @format date-time */
   mutedUntil: string | null;
   steamTradeUrl: string | null;
@@ -95,7 +95,7 @@ export interface PartialUserResponse {
   username: string;
   avatarUrl: string | null;
   xp: number;
-  balance?: string;
+  balance?: number;
   /** @format date-time */
   mutedUntil?: string | null;
   steamTradeUrl?: string | null;
@@ -130,7 +130,7 @@ export interface CrateResponse {
   id: string;
   name: string;
   imageUrl: string;
-  cost: string;
+  cost: number;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
@@ -145,7 +145,7 @@ export interface CrateItemResponse {
   id: string;
   crateId: string;
   itemId: string;
-  value: string;
+  value: number;
   chance: number;
   /** @format date-time */
   createdAt: string;

@@ -125,9 +125,9 @@ describe('CrateController (e2e)', () => {
 
   describe('POST /crates/:id/open', () => {
     it('should open a crate, return the won item, deduct cost, add item value, and increment nonce', async () => {
-      const cost = '10.00';
-      const itemValue = '5.00';
-      const initialBalance = '100.00';
+      const cost = 1000;
+      const itemValue = 500;
+      const initialBalance = 10000;
 
       const user = await userFactory.create({
         balance: initialBalance,
@@ -160,12 +160,8 @@ describe('CrateController (e2e)', () => {
         .from(users)
         .where(eq(users.id, user.id));
 
-      const expectedBalance = (
-        parseFloat(initialBalance) -
-        parseFloat(cost) +
-        parseFloat(itemValue)
-      ).toFixed(2);
-      const expectedXp = user.xp + Math.round(+cost * 100);
+      const expectedBalance = initialBalance - cost + itemValue;
+      const expectedXp = user.xp + cost;
       expect(userObject.balance).toBe(expectedBalance);
       expect(userObject.xp).toBe(expectedXp);
       expect(userObject.nonce).toBe(1);
@@ -189,8 +185,8 @@ describe('CrateController (e2e)', () => {
     });
 
     it('should return 400 when the crate has no items', async () => {
-      const user = await userFactory.create({ balance: '100.00' });
-      const crate = await crateFactory.create({ cost: '10.00' });
+      const user = await userFactory.create({ balance: 10000 });
+      const crate = await crateFactory.create({ cost: 1000 });
 
       await request(app.getHttpServer())
         .post(`/crates/${crate.id}/open`)
@@ -199,8 +195,8 @@ describe('CrateController (e2e)', () => {
     });
 
     it('should return 500 when crate item chances do not add up to 10000', async () => {
-      const user = await userFactory.create({ balance: '100.00' });
-      const crate = await crateFactory.create({ cost: '10.00' });
+      const user = await userFactory.create({ balance: 10000 });
+      const crate = await crateFactory.create({ cost: 1000 });
       const item = await itemFactory.create();
       await crateItemFactory.create({
         crateId: crate.id,
@@ -215,8 +211,8 @@ describe('CrateController (e2e)', () => {
     });
 
     it('should return 400 when the user has insufficient balance', async () => {
-      const user = await userFactory.create({ balance: '5.00' });
-      const crate = await crateFactory.create({ cost: '10.00' });
+      const user = await userFactory.create({ balance: 500 });
+      const crate = await crateFactory.create({ cost: 1000 });
       const item = await itemFactory.create();
       await crateItemFactory.create({
         crateId: crate.id,

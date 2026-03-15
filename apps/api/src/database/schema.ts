@@ -2,7 +2,6 @@ import { MAX_MESSAGE_LENGTH } from './consts';
 import { Role } from './types';
 import { pgEnum, varchar } from 'drizzle-orm/pg-core';
 import { boolean } from 'drizzle-orm/pg-core';
-import { decimal } from 'drizzle-orm/pg-core';
 import { integer } from 'drizzle-orm/pg-core';
 import { timestamp } from 'drizzle-orm/pg-core';
 import { uuid } from 'drizzle-orm/pg-core';
@@ -26,7 +25,7 @@ export const users = pgTable('users', {
   username: varchar().notNull(),
   avatarUrl: varchar('avatar_url'),
   xp: integer().notNull().default(0),
-  balance: decimal({ precision: 10, scale: 2 }).notNull().default('0.00'),
+  balance: integer().notNull().default(0),
   role: roles().notNull().default(Role.User),
   mutedUntil: timestamp('muted_until', { withTimezone: true }),
   steamTradeUrl: varchar('steam_trade_url'),
@@ -66,7 +65,7 @@ export const crates = pgTable('crates', {
   id: uuid().primaryKey().defaultRandom(),
   name: varchar().notNull(),
   imageUrl: varchar('image_url').notNull(),
-  cost: decimal({ precision: 10, scale: 2 }).notNull(),
+  cost: integer().notNull(),
   ...timestamps,
 });
 
@@ -85,7 +84,7 @@ export const crateItems = pgTable('crate_items', {
   itemId: uuid('item_id')
     .notNull()
     .references(() => items.id),
-  value: decimal({ precision: 10, scale: 2 }).notNull().default('0.00'),
+  value: integer().notNull().default(0),
   chance: integer().notNull().default(0),
   ...timestamps,
 });
@@ -101,7 +100,7 @@ export const crateHistory = pgTable('crate_history', {
   itemId: uuid('item_id')
     .notNull()
     .references(() => items.id),
-  value: decimal({ precision: 10, scale: 2 }).notNull().default('0.00'),
+  value: integer().notNull().default(0),
   serverSeed: varchar('server_seed', { length: 64 }).notNull(),
   clientSeed: varchar('client_seed', { length: 64 }).notNull(),
   nonce: integer().notNull().default(0),
