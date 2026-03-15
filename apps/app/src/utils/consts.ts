@@ -15,12 +15,13 @@ export const ROLL_BASE_OFFSET =
   (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) * 50 + ROLL_ITEM_WIDTH / 2 + 4;
 export const ROLL_ITEM_CENTER_OFFSET =
   ROLL_BASE_OFFSET + (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) / 2;
-
-export const STEAM_ID_BASE = 76561197960265728n;
-
+export const SPIN_DURATION = 8000;
+export const SPIN_DURATION_FAST = 3000;
 export const TICK_SOUNDS = [
   "/tick1.webm",
   "/tick2.webm",
   "/tick3.webm",
   "/tick4.webm",
 ];
+
+export const STEAM_ID_BASE = 76561197960265728n;

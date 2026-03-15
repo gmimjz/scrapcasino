@@ -8,6 +8,7 @@ import type {
 import { Button } from "../components/Button";
 import { CrateItem } from "../components/CrateItem";
 import { Roll } from "../components/Roll";
+import { Slider } from "../components/Slider";
 import { useRoll } from "../hooks/useRoll";
 import { useOpenCrate } from "../mutations/useOpenCrate";
 import { useCrate } from "../queries/useCrate";
@@ -18,7 +19,8 @@ import { formatBalance } from "../utils/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronLeft, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+import { FaBoltLightning } from "react-icons/fa6";
 import { twMerge } from "tailwind-merge";
 
 type Props = {
@@ -62,6 +64,10 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
     rollsItems,
     showAnimation,
     isRolling,
+    fastSpin,
+    setFastSpin,
+    volume,
+    setVolume,
   } = useRoll(crateData?.crateItems ?? [], initialRolledItems);
 
   if (!crateData) {
@@ -111,13 +117,13 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
           />
         ))}
       </div>
-      <div className="relative flex items-center justify-center gap-2">
-        <div className="absolute left-0 flex gap-1">
+      <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
+        <div className="order-1 flex flex-1 gap-1 md:order-none">
           {CRATE_OPEN_COUNT_OPTIONS.map((countOption) => (
             <button
               key={countOption}
               className={twMerge(
-                "h-6 cursor-pointer bg-white/25 px-3 text-xs font-bold text-white",
+                "size-7 cursor-pointer bg-white/25 text-xs font-bold text-white",
                 count === countOption && "bg-blue",
                 isRolling && "opacity-50",
               )}
@@ -128,25 +134,63 @@ export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
             </button>
           ))}
         </div>
-        <Button
-          color={Color.Red}
-          onClick={handleOpen}
-          disabled={isOpenButtonDisabled}
-        >
-          <p className="flex gap-1">
-            OPEN {count} FOR
-            <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
-            {formatBalance(totalCost)}
-          </p>
-        </Button>
-        <Button
-          color={Color.Transparent}
-          isHighlighted={false}
-          onClick={() => roll()}
-          disabled={isRolling}
-        >
-          DEMO SPIN
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            color={Color.Red}
+            onClick={handleOpen}
+            disabled={isOpenButtonDisabled}
+          >
+            <p className="flex gap-1">
+              OPEN {count} FOR
+              <Image src="/scrap.svg" alt="scrap" width={16} height={16} />
+              {formatBalance(totalCost)}
+            </p>
+          </Button>
+          <Button
+            color={Color.Transparent}
+            isHighlighted={false}
+            onClick={() => roll()}
+            disabled={isRolling}
+          >
+            DEMO SPIN
+          </Button>
+        </div>
+        <div className="order-2 flex flex-1 justify-end gap-1 md:order-none">
+          <button
+            className={twMerge(
+              "flex size-7 cursor-pointer items-center justify-center bg-white/25 text-xs font-bold text-white",
+              fastSpin && "bg-blue",
+            )}
+            onClick={() => setFastSpin(!fastSpin)}
+          >
+            <FaBoltLightning size={14} />
+          </button>
+          <div className="group relative">
+            <button
+              className="flex size-7 cursor-pointer items-center justify-center bg-white/25 text-xs font-bold text-white"
+              onClick={() => setVolume(volume === 0 ? 1 : 0)}
+            >
+              {volume === 0 ? (
+                <FaVolumeMute size={14} />
+              ) : (
+                <FaVolumeUp size={14} />
+              )}
+            </button>
+            <div className="absolute bottom-full left-1/2 hidden -translate-x-1/2 border border-4 border-transparent group-hover:block md:-right-1 md:left-auto md:translate-x-0">
+              <div className="bg-black">
+                <div className="bg-white/25 px-2 py-1">
+                  <Slider
+                    min={0}
+                    max={1}
+                    step={0.1}
+                    value={volume}
+                    onChange={setVolume}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="flex flex-col gap-2">
         <p className="text-sm font-semibold text-white">ITEMS</p>

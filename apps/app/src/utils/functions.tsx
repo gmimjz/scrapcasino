@@ -93,12 +93,20 @@ export const easeOutQuad = (t: number): number => {
   return t * (2 - t);
 };
 
-export const playCrateSound = () => {
+export const playCrateSound = (
+  totalDuration: number,
+  getVolume: () => number,
+) => {
   const totalItems = 50;
-  const totalDuration = 7000;
   const startTime = performance.now();
 
   let lastPlayedIndex = -1;
+
+  const playSound = (index: number) => {
+    const audio = new Audio(TICK_SOUNDS[index % TICK_SOUNDS.length]);
+    audio.volume = getVolume();
+    audio.play();
+  };
 
   const tick = (now: number) => {
     const elapsed = now - startTime;
@@ -108,14 +116,14 @@ export const playCrateSound = () => {
     const currentIndex = Math.floor(easedProgress * totalItems);
 
     if (currentIndex !== lastPlayedIndex && currentIndex < totalItems) {
-      new Audio(TICK_SOUNDS[currentIndex % TICK_SOUNDS.length]).play();
+      playSound(currentIndex);
       lastPlayedIndex = currentIndex;
     }
 
     if (progress < 1) {
       requestAnimationFrame(tick);
     } else {
-      new Audio(TICK_SOUNDS[totalItems % TICK_SOUNDS.length]).play();
+      playSound(totalItems);
     }
   };
 

@@ -6,7 +6,7 @@ import {
   generateOffset,
   playCrateSound,
 } from "../utils/functions";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 export const useRoll = (
   crateItems: CrateItemResponse[],
@@ -20,6 +20,14 @@ export const useRoll = (
   const [transitionDuration, setTransitionDuration] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isRolling, setIsRolling] = useState(false);
+  const [fastSpin, setFastSpin] = useState(false);
+  const [volume, setVolumeState] = useState(1);
+  const volumeRef = useRef(volume);
+
+  const setVolume = useCallback((newVolume: number) => {
+    volumeRef.current = newVolume;
+    setVolumeState(newVolume);
+  }, []);
 
   const setCount = useCallback(
     (newCount: number) => {
@@ -45,6 +53,8 @@ export const useRoll = (
 
   const roll = (wonItems?: CrateItemResponse[]) =>
     new Promise((resolve) => {
+      const spinDuration = fastSpin ? 3000 : 8000;
+
       setIsRolling(true);
       setRollsItems(
         Array.from({ length: count }, (_, i) =>
@@ -57,9 +67,9 @@ export const useRoll = (
       setShowAnimation(false);
       setTransitionDuration(0);
       setOffsets(Array(count).fill(0));
-      playCrateSound();
+      playCrateSound(spinDuration, () => volumeRef.current);
       setTimeout(() => {
-        setTransitionDuration(7000);
+        setTransitionDuration(spinDuration);
         setOffsets(Array.from({ length: count }, () => generateOffset()));
         setTimeout(() => {
           setTransitionDuration(250);
@@ -67,7 +77,7 @@ export const useRoll = (
           setShowAnimation(true);
           setIsRolling(false);
           resolve(true);
-        }, 7500);
+        }, spinDuration + 500);
       }, 1);
     });
 
@@ -80,5 +90,9 @@ export const useRoll = (
     rollsItems,
     showAnimation,
     isRolling,
+    fastSpin,
+    setFastSpin,
+    volume,
+    setVolume,
   };
 };
