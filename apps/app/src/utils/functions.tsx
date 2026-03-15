@@ -1,10 +1,14 @@
+import { CrateItemResponse } from "../client/api";
 import { ApiClient } from "../client/client";
 import { Toast } from "../components/Toast";
 import {
   BASE_XP,
   BASE_XP_INCREASE,
   BLOCKED_USERS_LOCAL_STORAGE_KEY,
+  ROLL_ITEM_FIRST_INDEX,
+  ROLL_ITEMS_COUNT,
   TICK_SOUNDS,
+  WIN_ITEM_ROLL_INDEX,
 } from "./consts";
 import { Color, ToastStatus } from "./enums";
 import { ApiError } from "./types";
@@ -152,4 +156,49 @@ export const addToast = (message?: string, status?: ToastStatus) => {
 export const onError = (error: ApiError) => {
   const message = error.response?.data.message;
   addToast(message, ToastStatus.Error);
+};
+
+export const generateRandomRollItem = (
+  crateItems: CrateItemResponse[],
+): CrateItemResponse => {
+  let totalWeight = 0;
+
+  const biasedItems = crateItems.map((item) => {
+    const biasedWeight = Math.pow(item.chance, 0.33);
+    totalWeight += biasedWeight;
+
+    return {
+      ...item,
+      biasedWeight,
+    };
+  });
+
+  const number = Math.random() * totalWeight;
+  let cumulativeChance = 0;
+
+  for (const item of biasedItems) {
+    cumulativeChance += item.biasedWeight;
+    if (number < cumulativeChance) {
+      return item;
+    }
+  }
+
+  return biasedItems[biasedItems.length - 1];
+};
+
+export const generateRandomRoll = (
+  crateItems: CrateItemResponse[],
+  wonItem: CrateItemResponse,
+): CrateItemResponse[] => {
+  const results: CrateItemResponse[] = [];
+
+  for (let i = 0; i < ROLL_ITEMS_COUNT; i++) {
+    if (i === WIN_ITEM_ROLL_INDEX + ROLL_ITEM_FIRST_INDEX + 1) {
+      results.push(wonItem);
+    } else {
+      results.push(generateRandomRollItem(crateItems));
+    }
+  }
+
+  return results;
 };

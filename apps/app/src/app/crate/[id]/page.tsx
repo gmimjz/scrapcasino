@@ -1,5 +1,10 @@
 import { fetchCrate } from "../../../utils/functions";
+import {
+  generateRandomRoll,
+  generateRandomRollItem,
+} from "../../../utils/functions";
 import { Crate } from "../../../views/Crate";
+import { redirect } from "next/navigation";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -10,5 +15,20 @@ export default async function CratePage({ params }: Props) {
 
   const initialData = await fetchCrate(id);
 
-  return <Crate id={id} initialData={initialData} />;
+  if (!initialData) {
+    redirect("/crates");
+  }
+
+  const initialRolledItems = generateRandomRoll(
+    initialData.crateItems,
+    generateRandomRollItem(initialData.crateItems),
+  );
+
+  return (
+    <Crate
+      id={id}
+      initialData={initialData}
+      initialRolledItems={initialRolledItems}
+    />
+  );
 }

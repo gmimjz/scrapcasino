@@ -1,6 +1,10 @@
 "use client";
 
-import type { GetCrateResponse, UserResponse } from "../client/api";
+import type {
+  CrateItemResponse,
+  GetCrateResponse,
+  UserResponse,
+} from "../client/api";
 import { Button } from "../components/Button";
 import { CrateItem } from "../components/CrateItem";
 import { Roll } from "../components/Roll";
@@ -18,9 +22,10 @@ import { FaChevronLeft } from "react-icons/fa";
 type Props = {
   id: string;
   initialData: GetCrateResponse | null;
+  initialRolledItems: CrateItemResponse[];
 };
 
-export const Crate = ({ id, initialData }: Props) => {
+export const Crate = ({ id, initialData, initialRolledItems }: Props) => {
   const crateData = useCrate(id, initialData);
   const user = useUser();
   const { mutateAsync: openCrate } = useOpenCrate();
@@ -53,7 +58,7 @@ export const Crate = ({ id, initialData }: Props) => {
     rolledItems,
     showAnimation,
     isRolling,
-  } = useRoll(crateData?.crateItems ?? []);
+  } = useRoll(crateData?.crateItems ?? [], initialRolledItems);
 
   if (!crateData) {
     return <></>;
