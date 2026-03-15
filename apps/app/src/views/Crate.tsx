@@ -4,17 +4,15 @@ import type { GetCrateResponse, UserResponse } from "../client/api";
 import { Button } from "../components/Button";
 import { CrateItem } from "../components/CrateItem";
 import { Roll } from "../components/Roll";
-import { Sound } from "../components/Sound";
 import { useRoll } from "../hooks/useRoll";
 import { useOpenCrate } from "../mutations/useOpenCrate";
 import { useCrate } from "../queries/useCrate";
 import { USER_QUERY_KEY, useUser } from "../queries/useUser";
 import { Color } from "../utils/enums";
-import { formatBalance, playCrateSound } from "../utils/functions";
+import { formatBalance } from "../utils/functions";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 
 type Props = {
@@ -48,8 +46,6 @@ export const Crate = ({ id, initialData }: Props) => {
     });
   };
 
-  const soundRef = useRef<HTMLSourceElement>(null);
-
   const {
     roll,
     offset,
@@ -57,7 +53,7 @@ export const Crate = ({ id, initialData }: Props) => {
     rolledItems,
     showAnimation,
     isRolling,
-  } = useRoll(crateData?.crateItems ?? [], () => playCrateSound(soundRef));
+  } = useRoll(crateData?.crateItems ?? []);
 
   if (!crateData) {
     return <></>;
@@ -77,7 +73,6 @@ export const Crate = ({ id, initialData }: Props) => {
 
   return (
     <div className="mx-2 my-8 flex flex-col gap-4">
-      <Sound ref={soundRef} />
       <div className="relative flex flex-col items-center gap-2">
         <Link
           href="/crates"

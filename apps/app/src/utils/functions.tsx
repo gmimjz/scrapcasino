@@ -4,10 +4,10 @@ import {
   BASE_XP,
   BASE_XP_INCREASE,
   BLOCKED_USERS_LOCAL_STORAGE_KEY,
+  TICK_SOUNDS,
 } from "./consts";
 import { Color, ToastStatus } from "./enums";
 import { ApiError } from "./types";
-import { RefObject } from "react";
 import { toast } from "sonner";
 
 export const fetchUser = async (cookie: string) => {
@@ -87,9 +87,7 @@ export const easeOutQuad = (t: number): number => {
   return t * (2 - t);
 };
 
-export const playCrateSound = (
-  sourceRef: RefObject<HTMLSourceElement | null>,
-) => {
+export const playCrateSound = () => {
   const totalItems = 50;
   const totalDuration = 7000;
   const startTime = performance.now();
@@ -104,21 +102,14 @@ export const playCrateSound = (
     const currentIndex = Math.floor(easedProgress * totalItems);
 
     if (currentIndex !== lastPlayedIndex && currentIndex < totalItems) {
-      if (sourceRef.current) {
-        const newAudio = new Audio(sourceRef.current.src);
-        newAudio.play();
-      }
-
+      new Audio(TICK_SOUNDS[currentIndex % TICK_SOUNDS.length]).play();
       lastPlayedIndex = currentIndex;
     }
 
     if (progress < 1) {
       requestAnimationFrame(tick);
     } else {
-      if (sourceRef.current) {
-        const newAudio = new Audio(sourceRef.current.src);
-        newAudio.play();
-      }
+      new Audio(TICK_SOUNDS[totalItems % TICK_SOUNDS.length]).play();
     }
   };
 
