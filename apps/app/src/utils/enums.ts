@@ -5,6 +5,7 @@ export enum Color {
   Yellow = "yellow",
   Black = "black",
   Transparent = "transparent",
+  White = "white",
 }
 
 export enum Sort {
