@@ -1,66 +1,83 @@
 import { CrateItemResponse } from "../client/api";
-import { ROLL_ITEM_GAP_WIDTH, ROLL_ITEM_WIDTH } from "../utils/consts";
-import { playCrateSound } from "../utils/functions";
-import { generateRandomRoll, generateRandomRollItem } from "../utils/functions";
-import { useState } from "react";
+import { ROLL_ITEM_CENTER_OFFSET } from "../utils/consts";
+import {
+  generateRandomRoll,
+  generateRandomRollItem,
+  generateOffset,
+  playCrateSound,
+} from "../utils/functions";
+import { useCallback, useState } from "react";
 
 export const useRoll = (
   crateItems: CrateItemResponse[],
   initialRolledItems: CrateItemResponse[],
 ) => {
-  const [rolledItems, setRolledItems] =
-    useState<CrateItemResponse[]>(initialRolledItems);
-  const [offset, setOffset] = useState(0);
+  const [count, setCountState] = useState(1);
+  const [rollsItems, setRollsItems] = useState<CrateItemResponse[][]>([
+    initialRolledItems,
+  ]);
+  const [offsets, setOffsets] = useState<number[]>([0]);
   const [transitionDuration, setTransitionDuration] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const [isRolling, setIsRolling] = useState(false);
 
-  const roll = (wonItem?: CrateItemResponse) =>
+  const setCount = useCallback(
+    (newCount: number) => {
+      setCountState(newCount);
+      setRollsItems((prev) => {
+        if (prev.length === newCount) return prev;
+        if (prev.length < newCount) {
+          return [
+            ...prev,
+            ...Array.from({ length: newCount - prev.length }, () =>
+              generateRandomRoll(
+                crateItems,
+                generateRandomRollItem(crateItems),
+              ),
+            ),
+          ];
+        }
+        return prev.slice(0, newCount);
+      });
+    },
+    [crateItems],
+  );
+
+  const roll = (wonItems?: CrateItemResponse[]) =>
     new Promise((resolve) => {
       setIsRolling(true);
-      setRolledItems(
-        generateRandomRoll(
-          crateItems,
-          wonItem ?? generateRandomRollItem(crateItems),
+      setRollsItems(
+        Array.from({ length: count }, (_, i) =>
+          generateRandomRoll(
+            crateItems,
+            wonItems?.[i] ?? generateRandomRollItem(crateItems),
+          ),
         ),
       );
       setShowAnimation(false);
       setTransitionDuration(0);
-      setOffset(0);
+      setOffsets(Array(count).fill(0));
       playCrateSound();
       setTimeout(() => {
         setTransitionDuration(7000);
-        const edgeBiasedOffset = Math.round(
-          ((1 - Math.cos(Math.random() * Math.PI)) / 2) * ROLL_ITEM_WIDTH,
-        );
-        setOffset(
-          (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) * 50 +
-            ROLL_ITEM_WIDTH / 2 +
-            4 +
-            edgeBiasedOffset,
-        );
+        setOffsets(Array.from({ length: count }, () => generateOffset()));
         setTimeout(() => {
           setTransitionDuration(250);
-          setOffset(
-            (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) * 50 +
-              ROLL_ITEM_WIDTH / 2 +
-              4 +
-              (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) / 2,
-          );
+          setOffsets(Array(count).fill(ROLL_ITEM_CENTER_OFFSET));
           setShowAnimation(true);
-
           setIsRolling(false);
-
           resolve(true);
         }, 7500);
       }, 1);
     });
 
   return {
+    count,
+    setCount,
     roll,
-    offset,
+    offsets,
     transitionDuration,
-    rolledItems,
+    rollsItems,
     showAnimation,
     isRolling,
   };

@@ -393,13 +393,23 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpenCrateBody"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CrateItemResponse"
+                  "$ref": "#/components/schemas/OpenCrateResponse"
                 }
               }
             }
@@ -907,6 +917,33 @@
         "required": [
           "crate",
           "crateItems",
+          "items"
+        ]
+      },
+      "OpenCrateBody": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+          }
+        },
+        "required": [
+          "count"
+        ]
+      },
+      "OpenCrateResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CrateItemResponse"
+            }
+          }
+        },
+        "required": [
           "items"
         ]
       }

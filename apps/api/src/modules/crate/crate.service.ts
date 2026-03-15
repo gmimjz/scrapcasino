@@ -16,7 +16,9 @@ import {
   GetCrateResponse,
   GetCratesResponse,
   ItemResponse,
+  OpenCrateResponse,
 } from './crate.dto';
+import { hmacToRoll, selectItem } from './utils';
 import {
   BadRequestException,
   Injectable,
@@ -68,7 +70,11 @@ export class CrateService {
     };
   }
 
-  async openCrate(user: User, crateId: string): Promise<CrateItemResponse> {
+  async openCrate(
+    user: User,
+    crateId: string,
+    count: number,
+  ): Promise<OpenCrateResponse> {
     const [crate] = await this.db
       .select()
       .from(crates)
@@ -88,33 +94,10 @@ export class CrateService {
 
     const totalChance = items.reduce((sum, item) => sum + item.chance, 0);
     if (totalChance !== 10000) {
-      throw new InternalServerErrorException('Crate item chances');
+      throw new InternalServerErrorException('Crate items chances are invalid');
     }
 
-    const [serverSeedObject] = await this.db
-      .select()
-      .from(serverSeeds)
-      .where(eq(serverSeeds.hashedServerSeed, user.hashedServerSeed));
-
-    const { serverSeed } = serverSeedObject;
-    const { clientSeed, nonce } = user;
-
-    const hmac = await hmacSha256(serverSeed, `${clientSeed}:${nonce}`);
-    const roll = Math.floor(
-      (parseInt(hmac.slice(0, 8), 16) / 0x100000000) * 10000,
-    );
-
-    let cumulative = 0;
-    let wonItem = items[items.length - 1];
-    for (const item of items) {
-      cumulative += item.chance;
-      if (roll < cumulative) {
-        wonItem = item;
-        break;
-      }
-    }
-
-    await this.db.transaction(async (tx) => {
+    const wonItems = await this.db.transaction(async (tx) => {
       const [userObject] = await tx
         .select()
         .from(users)
@@ -124,29 +107,54 @@ export class CrateService {
         throw new NotFoundException('User not found');
       }
 
-      if (userObject.balance < crate.cost) {
+      const totalCost = crate.cost * count;
+      if (userObject.balance < totalCost) {
         throw new BadRequestException('Insufficient balance');
       }
+
+      const [serverSeedObject] = await tx
+        .select()
+        .from(serverSeeds)
+        .where(eq(serverSeeds.hashedServerSeed, user.hashedServerSeed));
+      if (!serverSeedObject) {
+        throw new InternalServerErrorException('Server seed not found');
+      }
+
+      const hmacs = await Promise.all(
+        Array.from({ length: count }, (_, i) =>
+          hmacSha256(
+            serverSeedObject.serverSeed,
+            `${userObject.clientSeed}:${userObject.nonce + i}`,
+          ),
+        ),
+      );
+
+      const wonItems = hmacs.map((hmac) => selectItem(hmacToRoll(hmac), items));
+      const totalWonValue = wonItems.reduce((sum, { value }) => sum + value, 0);
 
       await tx
         .update(users)
         .set({
-          balance: sql`${users.balance} - ${crate.cost}::integer + ${wonItem.value}::integer`,
-          xp: sql`${users.xp} + ${crate.cost}::integer`,
-          nonce: nonce + 1,
+          balance: sql`${users.balance} - ${totalCost}::integer + ${totalWonValue}::integer`,
+          xp: sql`${users.xp} + ${totalCost}::integer`,
+          nonce: userObject.nonce + count,
         })
         .where(eq(users.id, user.id));
 
-      await tx.insert(crateHistory).values({
-        userId: user.id,
-        crateId,
-        itemId: wonItem.itemId,
-        serverSeed,
-        clientSeed,
-        nonce,
-      });
+      await tx.insert(crateHistory).values(
+        wonItems.map((wonItem, i) => ({
+          userId: user.id,
+          crateId,
+          itemId: wonItem.itemId,
+          serverSeed: serverSeedObject.serverSeed,
+          clientSeed: userObject.clientSeed,
+          nonce: userObject.nonce + i,
+        })),
+      );
+
+      return wonItems;
     });
 
-    return new CrateItemResponse(wonItem);
+    return { items: wonItems.map((item) => new CrateItemResponse(item)) };
   }
 }

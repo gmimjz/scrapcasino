@@ -8,6 +8,7 @@ import type { Database } from '../../../database';
 import { users } from '../../../database/schema';
 import { AppModule } from '../../app/app.module';
 import { DATABASE_PROVIDER } from '../../database/database.provider';
+import { MAX_CRATE_OPEN_COUNT } from '../consts';
 import { faker } from '@faker-js/faker';
 import fastifyCookie from '@fastify/cookie';
 import {
@@ -145,9 +146,11 @@ describe('CrateController (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post(`/crates/${crate.id}/open`)
         .set('Cookie', createCookie(user.session!.id))
+        .send({ count: 1 })
         .expect(201);
 
-      expect(response.body).toEqual({
+      expect(response.body.items).toHaveLength(1);
+      expect(response.body.items[0]).toEqual({
         id: crateItem.id,
         crateId: crate.id,
         itemId: item.id,
@@ -167,6 +170,71 @@ describe('CrateController (e2e)', () => {
       expect(userObject.nonce).toBe(1);
     });
 
+    it('should open multiple crates, return all won items, deduct total cost, and increment nonce by count', async () => {
+      const count = 3;
+      const cost = 1000;
+      const itemValue = 500;
+      const initialBalance = 10000;
+
+      const user = await userFactory.create({
+        balance: initialBalance,
+        nonce: 0,
+      });
+      const crate = await crateFactory.create({ cost });
+      const item = await itemFactory.create();
+      const crateItem = await crateItemFactory.create({
+        crateId: crate.id,
+        itemId: item.id,
+        value: itemValue,
+        chance: 10000,
+      });
+
+      const response = await request(app.getHttpServer())
+        .post(`/crates/${crate.id}/open`)
+        .set('Cookie', createCookie(user.session!.id))
+        .send({ count })
+        .expect(201);
+
+      expect(response.body.items).toHaveLength(count);
+      for (const wonItem of response.body.items) {
+        expect(wonItem).toEqual({
+          id: crateItem.id,
+          crateId: crate.id,
+          itemId: item.id,
+          value: itemValue,
+          chance: 10000,
+        });
+      }
+
+      const [userObject] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, user.id));
+
+      const expectedBalance = initialBalance - cost * count + itemValue * count;
+      const expectedXp = user.xp + cost * count;
+      expect(userObject.balance).toBe(expectedBalance);
+      expect(userObject.xp).toBe(expectedXp);
+      expect(userObject.nonce).toBe(count);
+    });
+
+    it('should return 400 when count exceeds max crate open count', async () => {
+      const user = await userFactory.create({ balance: 100000 });
+      const crate = await crateFactory.create({ cost: 1000 });
+      const item = await itemFactory.create();
+      await crateItemFactory.create({
+        crateId: crate.id,
+        itemId: item.id,
+        chance: 10000,
+      });
+
+      await request(app.getHttpServer())
+        .post(`/crates/${crate.id}/open`)
+        .set('Cookie', createCookie(user.session!.id))
+        .send({ count: MAX_CRATE_OPEN_COUNT + 1 })
+        .expect(400);
+    });
+
     it('should return 401 when not logged in', async () => {
       const crate = await crateFactory.create();
 
@@ -181,6 +249,7 @@ describe('CrateController (e2e)', () => {
       await request(app.getHttpServer())
         .post(`/crates/${faker.string.uuid()}/open`)
         .set('Cookie', createCookie(user.session!.id))
+        .send({ count: 1 })
         .expect(404);
     });
 
@@ -191,6 +260,7 @@ describe('CrateController (e2e)', () => {
       await request(app.getHttpServer())
         .post(`/crates/${crate.id}/open`)
         .set('Cookie', createCookie(user.session!.id))
+        .send({ count: 1 })
         .expect(400);
     });
 
@@ -207,6 +277,7 @@ describe('CrateController (e2e)', () => {
       await request(app.getHttpServer())
         .post(`/crates/${crate.id}/open`)
         .set('Cookie', createCookie(user.session!.id))
+        .send({ count: 1 })
         .expect(500);
     });
 
@@ -223,6 +294,7 @@ describe('CrateController (e2e)', () => {
       await request(app.getHttpServer())
         .post(`/crates/${crate.id}/open`)
         .set('Cookie', createCookie(user.session!.id))
+        .send({ count: 1 })
         .expect(400);
     });
   });
