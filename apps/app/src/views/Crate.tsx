@@ -73,9 +73,7 @@ export const Crate = ({ id, initialData }: Props) => {
   };
 
   const isOpenButtonDisabled =
-    isRolling ||
-    !user ||
-    crateData.crate.cost > user.balance;
+    isRolling || !user || crateData.crate.cost > user.balance;
 
   return (
     <div className="mx-2 my-8 flex flex-col gap-4">
