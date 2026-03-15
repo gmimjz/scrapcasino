@@ -89,7 +89,33 @@ input.no-controls {
 }
 
 .animate-slide-in-left {
-  animation: slide-in-left 0.25s ease forwards;
+  animation: slide-in-left 0.2.25s ease forwards;
+}
+
+@keyframes roll-enter {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 124px;
+  }
+}
+
+@keyframes roll-exit {
+  from {
+    max-height: 124px;
+  }
+  to {
+    max-height: 0;
+  }
+}
+
+.animate-roll-enter {
+  animation: roll-enter 0.25s ease forwards;
+}
+
+.animate-roll-exit {
+  animation: roll-exit 0.25s ease forwards;
 }
 
 .roll-background {

@@ -22,7 +22,7 @@ export const Header = () => {
   const { level, xp, xpGoal } = calculateLevelAndXpGoal(user?.xp || 0);
 
   return (
-    <div className="fixed z-10 h-[72px] w-full bg-black">
+    <div className="fixed z-20 h-[72px] w-full bg-black">
       <div className="flex h-full flex-col justify-center gap-1 bg-white/5 px-2 lg:px-4 lg:py-0">
         {user && (
           <div className="flex gap-2 md:hidden">
