@@ -1,9 +1,10 @@
 import { CrateItemResponse } from "../client/api";
-import { ROLL_ITEM_CENTER_OFFSET } from "../utils/consts";
 import {
   generateRandomRoll,
   generateRandomRollItem,
   generateOffset,
+  getCenterOffset,
+  getItemWidth,
   playCrateSound,
 } from "../utils/functions";
 import { useCallback, useRef, useState } from "react";
@@ -14,6 +15,7 @@ export const useRoll = (
   crateItems: CrateItemResponse[],
   initialRolledItems: CrateItemResponse[],
 ) => {
+  const [itemWidth] = useState(getItemWidth);
   const [count, setCountState] = useState(1);
   const [rollsItems, setRollsItems] = useState<CrateItemResponse[][]>([
     initialRolledItems,
@@ -92,10 +94,12 @@ export const useRoll = (
       playCrateSound(spinDuration, () => volumeRef.current);
       setTimeout(() => {
         setTransitionDuration(spinDuration);
-        setOffsets(Array.from({ length: count }, () => generateOffset()));
+        setOffsets(
+          Array.from({ length: count }, () => generateOffset(itemWidth)),
+        );
         setTimeout(() => {
           setTransitionDuration(250);
-          setOffsets(Array(count).fill(ROLL_ITEM_CENTER_OFFSET));
+          setOffsets(Array(count).fill(getCenterOffset(itemWidth)));
           setShowAnimation(true);
           setIsRolling(false);
           resolve(true);
@@ -117,5 +121,6 @@ export const useRoll = (
     setFastSpin,
     volume,
     setVolume,
+    itemWidth,
   };
 };

@@ -2,7 +2,6 @@ import { CrateItemResponse, ItemResponse } from "../client/api";
 import {
   ROLL_ITEM_FIRST_INDEX,
   ROLL_ITEM_GAP_WIDTH,
-  ROLL_ITEM_WIDTH,
   WIN_ITEM_ROLL_INDEX,
 } from "../utils/consts";
 import { RollItem } from "./RollItem";
@@ -14,6 +13,7 @@ type Props = {
   crateItems: CrateItemResponse[];
   items: ItemResponse[];
   showAnimation: boolean;
+  itemWidth: number;
 };
 
 export const Roll = ({
@@ -22,6 +22,7 @@ export const Roll = ({
   crateItems,
   items,
   showAnimation,
+  itemWidth,
 }: Props) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +34,7 @@ export const Roll = ({
           className="flex gap-1 pr-[50%] pl-[50%] transition ease-out"
           ref={containerRef}
           style={{
-            transform: `translateX(-${offset + ROLL_ITEM_FIRST_INDEX * (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) + ROLL_ITEM_WIDTH / 2}px)`,
+            transform: `translateX(-${offset + ROLL_ITEM_FIRST_INDEX * (itemWidth + ROLL_ITEM_GAP_WIDTH) + itemWidth / 2}px)`,
             transitionDuration: `${transitionDuration}ms`,
           }}
         >
