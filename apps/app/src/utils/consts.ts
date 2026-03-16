@@ -10,6 +10,8 @@ export const ROLL_ITEMS_COUNT = 63;
 export const WIN_ITEM_ROLL_INDEX = 50;
 export const ROLL_ITEM_FIRST_INDEX = 5;
 export const ROLL_ITEM_WIDTH = 108;
+export const ROLL_ITEM_WIDTH_SM = 108;
+export const ROLL_ITEM_WIDTH_XS = 72;
 export const ROLL_ITEM_GAP_WIDTH = 4;
 export const ROLL_BASE_OFFSET =
   (ROLL_ITEM_WIDTH + ROLL_ITEM_GAP_WIDTH) * 50 + ROLL_ITEM_WIDTH / 2 + 4;

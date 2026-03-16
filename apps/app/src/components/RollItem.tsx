@@ -18,13 +18,13 @@ export const RollItem = ({
   showLoseAnimation,
 }: Props) => {
   return (
-    <div className="h-[108px] w-[108px] shrink-0 bg-black duration-250">
+    <div className="size-[72px] shrink-0 bg-black duration-250 sm:size-[108px]">
       <div
         className={`from-${getColorFromPrice(price)}/25 relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-b to-black/25`}
       >
         <Image
           className={twMerge(
-            "absolute",
+            "absolute w-[48px] sm:w-[72px]",
             showWinAnimation &&
               "-translate-y-[12px] scale-90 transition-transform duration-[500ms]",
             showLoseAnimation &&
@@ -37,9 +37,9 @@ export const RollItem = ({
         />
         <div
           className={twMerge(
-            "flex translate-y-[52px] gap-2 font-semibold text-white opacity-0",
+            "flex translate-y-[38px] gap-2 text-sm font-semibold text-white opacity-0 sm:translate-y-[52px] sm:text-base",
             showWinAnimation &&
-              "translate-y-[36px] opacity-100 transition-opacity transition-transform duration-[500ms]",
+              "translate-y-[24px] opacity-100 transition-opacity transition-transform duration-[500ms] sm:translate-y-[36px]",
           )}
         >
           <Image src="/scrap.svg" alt="scrap" width={16} height={16} />

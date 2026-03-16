@@ -5,9 +5,11 @@ import {
   BASE_XP,
   BASE_XP_INCREASE,
   BLOCKED_USERS_LOCAL_STORAGE_KEY,
-  ROLL_BASE_OFFSET,
   ROLL_ITEM_FIRST_INDEX,
+  ROLL_ITEM_GAP_WIDTH,
   ROLL_ITEM_WIDTH,
+  ROLL_ITEM_WIDTH_SM,
+  ROLL_ITEM_WIDTH_XS,
   ROLL_ITEMS_COUNT,
   TICK_SOUNDS,
   WIN_ITEM_ROLL_INDEX,
@@ -213,9 +215,22 @@ export const generateRandomRoll = (
   return results;
 };
 
-export const generateOffset = () => {
+export const getItemWidth = () => {
+  if (typeof window === "undefined") return ROLL_ITEM_WIDTH;
+  return window.matchMedia("(min-width: 640px)").matches
+    ? ROLL_ITEM_WIDTH_SM
+    : ROLL_ITEM_WIDTH_XS;
+};
+
+const getRollBaseOffset = (itemWidth: number) =>
+  (itemWidth + ROLL_ITEM_GAP_WIDTH) * WIN_ITEM_ROLL_INDEX + itemWidth / 2 + 4;
+
+export const getCenterOffset = (itemWidth: number) =>
+  getRollBaseOffset(itemWidth) + (itemWidth + ROLL_ITEM_GAP_WIDTH) / 2;
+
+export const generateOffset = (itemWidth: number) => {
   const edgeBiasedOffset = Math.round(
-    ((1 - Math.cos(Math.random() * Math.PI)) / 2) * ROLL_ITEM_WIDTH,
+    ((1 - Math.cos(Math.random() * Math.PI)) / 2) * itemWidth,
   );
-  return ROLL_BASE_OFFSET + edgeBiasedOffset;
+  return getRollBaseOffset(itemWidth) + edgeBiasedOffset;
 };
